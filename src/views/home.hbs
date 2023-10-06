@@ -1,0 +1,30 @@
+<h1>{{title}}</h1>
+<ul>
+    {{#each products}}
+    <li>
+        <img src="{{thumbnail}}" alt="{{title}}">
+        <p>Nombre: {{title}}</p>
+        <p>Descripción: {{description}}</p>
+        <p>Precio: {{price}}</p>
+        <p>Código: {{code}}</p>
+        <p>Stock: {{stock}}</p>
+    </li>
+    {{/each}}
+</ul>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('product-created', (product) => {
+        const li = document.createElement("li");
+        li.id = product.id;
+        li.textContent = `${product.name} - ${product.price}`;
+        const list = document.getElementById("products-list");
+        list.appendChild(li);
+    });
+    socket.on('product-deleted', (id)=>{
+        const li = document.getElementById(id);
+        if(li){
+            li.remove();
+        }
+    })
+</script>
