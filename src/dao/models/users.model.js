@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const userCollection = "usuarios";
+const userCollection = "users";
 
 const userSchema = new mongoose.Schema({
     first_name: {
@@ -12,6 +12,12 @@ const userSchema = new mongoose.Schema({
         max:20,
         required: true
     },
+    email: {
+        type: String,
+        max: 50,
+        required: true,
+        unique: true
+    }/*,
     password: {
         type: String,
         min:8,
@@ -21,12 +27,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         max: 20,
         required: true
-    },
-    email: {
-        type: String,
-        max: 50,
-        required: true,
-        unique: true
     },
     status: {
         type: Boolean,
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
     profile_picture: {
         type: String,
         required: true
-    }
+    }*/
 });
 
 const userModel = mongoose.model(userCollection, userSchema);

@@ -6,11 +6,13 @@ const handlebars = require('express-handlebars');
 const http = require('http');
 const server =http.createServer(app);
 const io = require('socket.io')(server);
+const { default: mongoose } = require('mongoose');
 
 /*ROUTES*/
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
+const usersRouter = require('./routes/users.router.js');
 const ProductManager = require('./dao/ProductManager.js');
 
 /*VARS*/
@@ -48,6 +50,16 @@ app.use(express.urlencoded({extended: true}));
 app.use("/", productsRouter);
 app.use("/", cartsRouter);
 app.use("/", viewsRouter);
+app.use("/api/users", usersRouter);
+
+/*Configuración de Mongoose*/
+mongoose.connect("mongodb+srv://herrerawilliamh:ydGbNCY5mXBYPU1w@cluster0.ncftrzr.mongodb.net/?retryWrites=true&w=majority")
+.then(() => {
+    console.log("Conectado a la Base de datos");
+})
+.catch((error) => {
+    console.log("Error al conectarse a la base de datos",error);
+});
 
 /*Respuesta del Puerto*/
 server.listen(PORT, () => {
