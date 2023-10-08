@@ -11,7 +11,7 @@ const io = require('socket.io')(server);
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
-const ProductManager = require('./ProductManager.js');
+const ProductManager = require('./dao/ProductManager.js');
 
 /*VARS*/
 const PORT = 8080;

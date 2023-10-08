@@ -1,6 +1,6 @@
 /*IMPORTS*/
 const express = require('express');
-const ProductManager = require('../ProductManager.js');
+const ProductManager = require('../dao/ProductManager.js');
 const server = require('../app');
 const io = require('socket.io')(server);
 

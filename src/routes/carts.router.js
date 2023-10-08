@@ -1,7 +1,7 @@
 /*IMPORTS*/
 const express = require('express');
-const CartManager = require('../CartManager.js');
-const ProductManager = require('../ProductManager.js');
+const CartManager = require('../dao/CartManager.js');
+const ProductManager = require('../dao/ProductManager.js');
 
 /*VARS*/
 const router = express.Router();
