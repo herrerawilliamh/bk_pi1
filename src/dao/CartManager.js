@@ -4,7 +4,7 @@ const path = require('path');
 const ProductManager = require('./ProductManager.js');
 
 /*VARS*/
-const cartPath = path.join(__dirname, 'data', 'cart.json');
+const cartPath = path.join(path.resolve(__dirname, '..',__dirname, 'data', 'cart.json'));
 
 class CartManager{
     constructor(products){

@@ -7,12 +7,14 @@ const http = require('http');
 const server =http.createServer(app);
 const io = require('socket.io')(server);
 const { default: mongoose } = require('mongoose');
+const Swal = require("sweetalert2");
 
 /*ROUTES*/
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
 const usersRouter = require('./routes/users.router.js');
+const chatRouter = require('./routes/chat.router.js')
 const ProductManager = require('./dao/ProductManager.js');
 
 /*VARS*/
@@ -36,7 +38,15 @@ app.get('/', (req, res) => {
 
 /*SOCKET*/
 io.on("connection", socket =>{
-    console.log("Usuario conectado")
+    console.log("Usuario conectado");
+    socket.on("newUser", (username) => {
+        users[socket.id]=username
+        io.emit("userConnected", username)
+    })
+    socket.on("chatMessage", (message) => {
+        const username = users[socket.id]
+        io.emit("message", {username: username, message: message})
+    })
     socket.on("disconnect", () => {
         console.log("Usuario desconectado")
     })
@@ -51,6 +61,7 @@ app.use("/", productsRouter);
 app.use("/", cartsRouter);
 app.use("/", viewsRouter);
 app.use("/api/users", usersRouter);
+app.use("/chat", chatRouter);
 
 /*Configuración de Mongoose*/
 mongoose.connect("mongodb+srv://herrerawilliamh:ydGbNCY5mXBYPU1w@cluster0.ncftrzr.mongodb.net/?retryWrites=true&w=majority")

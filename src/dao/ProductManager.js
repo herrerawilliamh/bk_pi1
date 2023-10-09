@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 /*VARS*/
-const dataPath = path.join(__dirname, 'data', 'data.json');
+const dataPath = path.join(path.resolve(__dirname, '..','data', 'data.json'));
 
 class ProductManager{
     constructor(){
