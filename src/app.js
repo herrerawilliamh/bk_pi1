@@ -1,13 +1,16 @@
 /*IMPORTS*/
 const express = require('express');
-const app = express();
 const path = require('path');
 const handlebars = require('express-handlebars');
 const http = require('http');
-const server =http.createServer(app);
-const io = require('socket.io')(server);
+const socketIO = require('socket.io');
+const { Server } = require('socket.io');
 const { default: mongoose } = require('mongoose');
 const Swal = require("sweetalert2");
+
+const app = express();
+const server =http.createServer(app);
+const io = new Server(server);
 
 /*ROUTES*/
 const productsRouter = require('./routes/products.router.js');
@@ -36,6 +39,8 @@ app.get('/', (req, res) => {
     res.render('home', {title: "WILLY Ecommerce", products: products});
 });
 
+/*USERS APLICATION*/
+const users = {};
 /*SOCKET*/
 io.on("connection", socket =>{
     console.log("Usuario conectado");
