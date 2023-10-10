@@ -1,17 +1,17 @@
 const { Router } = require('express');
-const { messageModel } = require('../dao/models/message.model');
+const ChatManager = require('../dao/ChatManager');
 
 const router = Router();
-
+const chatManager = new ChatManager();
 /*GET*/
 router.get('/', async (req, res) => {
-    res.render('chat', {title: "WILLY Ecommerce - Contacto"})
-    // try {
-    //     let messages = await messageModel.find();
-    //     res.send({ result:"success", payload:messages })
-    // } catch (error) {
-    //     console.log(error)
-    // }
+    try {
+        res.render('chat', {title: "WILLY Ecommerce - Contacto"})
+        const messages = await chatManager.getMessages();
+        res.send({ result:"success", payload:messages })
+    } catch (error) {
+        console.log(error)
+    }
 })
 /*POST*/
 router.post('/', async (req, res) => {
