@@ -8,13 +8,16 @@ const io = require('socket.io')(server);
 const router = express.Router();
 const productManager = new ProductManager();
 
-router.get("/products", (req, res) => {
+router.get("/products", async (req, res) => {
+    const products = await productManager.getProducts();
     const limit = req.query.limit || products.length;
     res.json(products.slice(0, limit));
 })
 
-router.get("/products/:pid", (req, res) => {
-    const idProduct = parseInt(req.params.pid);
+router.get("/products/:pid", async (req, res) => {
+    //const idProduct = parseInt(req.params.pid);
+    const idProduct = req.params.pid;
+    const products = await productManager.getProducts();
     const product = products.find(p => p.id === idProduct);
     if(!product) return res.send({error: "Producto no encontrado"});
     res.send({ product });
@@ -26,14 +29,12 @@ router.post("/products", (req, res)=>{
     if (!empty) {
         const result = productManager.addProduct(title, description, price, thumbnail, code, stock);
         if(result){
-            io.socket.emit('productsUpdated', productManager.getProducts());
-            res.status(201).json(result);
+            io.sockets.emit('productsUpdated', productManager.getProducts());
+            return res.status(201).json(result);
         }else{
             res.status(400).json({error: "No se pudo crear el producto"});
         }
-        res.send("Producto agregado exitosamente");
     } else {
-        // Enviar un mensaje de error si req.body es vacío
         res.send("No se han enviado datos por el método post");
     }
 })

@@ -1,18 +1,18 @@
 /*IMPORTS*/
-const fs = require('fs');
-const path = require('path');
-const { productModel } = require("./models/carts.model");
+/*const fs = require('fs');
+const path = require('path');*/
+const mongoose = require("mongoose");
+const { productModel } = require("./models/products.model");
 
 /*VARS*/
 //const dataPath = path.join(path.resolve(__dirname, '..','data', 'data.json'));
 
 class ProductManager{
-    constructor(productModel){
+    constructor(){
         this.products=[]
         this.path
-        this.productModel = productModel;
     }
-    addProduct(title, description, price, thumbnail, code, stock){
+    async addProduct(title, description, price, thumbnail, code, stock){
         if(!thumbnail){
             thumbnail = ""
         }
@@ -21,12 +21,17 @@ class ProductManager{
             console.log("Debes completar todos los campos")
             return false;
         }
-        const code_found =this.products.find((product)=>product.code===product.code)
+        /*const code_found = this.products.find((product)=>product.code===product.code)
+        if(code_found){
+            console.log("Código de producto encontrado, debes cambiar el Código de producto")
+            return false;
+        }*/
+        const code_found = await productModel.findOne({code: code})
         if(code_found){
             console.log("Código de producto encontrado, debes cambiar el Código de producto")
             return false;
         }
-        const products = this.getProducts()
+        //const products = this.getProducts()
         //const last_id = products[products.length - 1].id
         //const product_id = last_id + 1
         const product={
@@ -38,70 +43,38 @@ class ProductManager{
             code,
             stock
         }
-        /*products.push(product)
-        const new_data = JSON.stringify(products, null, 2);
-        fs.writeFileSync(dataPath, new_data);*/
-
-        this.productModel.create(product, (error, result) => {
-            if (error) {
-                console.log("Error al crear el producto", error);
-                return;
-            }
-            console.log("Producto creado exitosamente", result);
-        });
+        //products.push(product)
+        //const new_data = JSON.stringify(products, null, 2);
+        //fs.writeFileSync(dataPath, new_data);
+        await productModel.create(product)
     }
-    getProducts(){
-        this.productModel.find({}, (error, result) => {
-            if (error) {
-                console.log("Error al obtener los productos", error);
-                return;
-            } 
-            console.log("Productos obtenidos exitosamente", result);
-        });
-        /*try {
-            const data_reading = fs.readFileSync(dataPath, "utf-8")
-            const data_products = JSON.parse(data_reading)
-            return data_products
+    async getProducts(){
+        try {
+            /*const data_reading = fs.readFileSync(dataPath, "utf-8")
+            const data_products = JSON.parse(data_reading)*/
+            const data_products = await productModel.find()
+            return this.products = data_products
         } catch (error) {
             console.error("Error de lectura", error);
         }   
-        return this.products*/
     }
-    getProductsById(id){
-        this.productModel.findById(id, (error, result) => {
-            if (error) {
-                console.log("Error al obtener el producto", error);
-                return;
-            } 
-            if(!result){
-                console.log("Producto no encontrado");
-                return;
-            }
-            console.log("Productos obtenido exitosamente", result);
-        });
+    async getProductsById(id){
         /*const data_reading = this.getProducts()
-        const product_found = data_reading.find((product)=>product.id===+id)
-        if(!product_found){
-            console.log("Product Not Found")
-            return
-        }
-        return product_found*/
-    }
-    updateProduct(id, campo, dato){
-        const update = {};
-        update[campo] = dato;
-        this.productModel.findByIdAndUpdate(id, update, { new: true }, (error, result) => {
-            if (error) {
-                console.log("Error al actualizar el producto por id", error);
-                return;
-            } 
-            if(!result){
-                console.log("Producto no encontrado. No se pudo actualizar el producto.");
-                return;
+        const product_found = data_reading.find((product)=>product.id===+id)*/
+        try {
+            const product_found = await productModel.findOne({id: id})
+            if(!product_found){
+                console.log("Product Not Found")
+                return
             }
-            console.log("Producto actualizado exitosamente", result); 
-        });
-        /*const data_reading = this.getProductsById(id);
+            return product_found
+        } catch (error) {
+            console.error("Error al buscar el producto por id", error);
+        }
+    }
+    async updateProduct(id, campo, dato){
+        //const data_reading = this.getProductsById(id);
+        const data_reading = await productModel.findOne({id: id});
         if(!data_reading){
             console.log("Product Not Found. No se pudo actualizar el producto.")
             return
@@ -111,7 +84,7 @@ class ProductManager{
             return
         }
         data_reading[campo] = dato;
-        let product_found = this.getProducts();
+        /*let product_found = this.getProducts();
         product_found = product_found.map((p) => {
             if(p.id === id){
                 return data_reading
@@ -121,19 +94,10 @@ class ProductManager{
         fs.writeFileSync(dataPath, JSON.stringify(product_found, null, 2));
         console.log("Producto actualizado exitosamente");
         return product_found*/
+        await data_reading.save();
+        console.log("Producto actualizado exitosamente")
     }
-    deleteProduct(id){
-        this.productModel.findByIdAndDelete(id, (error, result) => {
-            if (error) {
-                console.log("Error al eliminar el producto por id", error);
-                return;
-            } 
-            if(!result){
-                console.log("Producto no encontrado. No se pudo eliminar el producto.");
-                return;
-            }
-            console.log("Producto eliminado exitosamente", result); 
-        });
+    async deleteProduct(id){
         /*const data_reading = this.getProductsById(id);
         let product_found = this.getProducts();
         if(!data_reading){
@@ -143,6 +107,12 @@ class ProductManager{
         product_found = product_found.filter((p) => p.id !== id);
         fs.writeFileSync(dataPath, JSON.stringify(product_found, null, 2))
         console.log("Producto eliminado exitosamente")*/
+        try {
+            await productModel.findByIdAndDelete(id);
+            console.log("Producto eliminado exitosamente")
+        } catch (error) {
+            console.error("Error al eliminar el producto", error);
+        }
     }
 
 }

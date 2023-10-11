@@ -66,7 +66,7 @@ app.use("/", productsRouter);
 app.use("/", cartsRouter);
 app.use("/", viewsRouter);
 app.use("/api/users", usersRouter);
-app.use("/chat", chatRouter);
+app.use("/api/chat", chatRouter);
 
 /*Configuración de Mongoose*/
 mongoose.connect("mongodb+srv://herrerawilliamh:ydGbNCY5mXBYPU1w@cluster0.ncftrzr.mongodb.net/?retryWrites=true&w=majority")

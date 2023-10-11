@@ -10,7 +10,7 @@ class ChatManager{
             username,
             message
         };
-        this.chatModel.create(messageData, (error, result) => {
+        this.messageModel.create(messageData, (error, result) => {
             if (error) {
                 console.log("Error al crear el mensaje", error);
                 return;

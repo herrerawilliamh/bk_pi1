@@ -10,17 +10,21 @@ router.get('/', async (req, res) => {
         const messages = await chatManager.getMessages();
         res.send({ result:"success", payload:messages })
     } catch (error) {
-        console.log(error)
+        console.log("Error al acceder al historial de mensajes", error)
     }
 })
 /*POST*/
 router.post('/', async (req, res) => {
-    let { username, message } = req.body;
-    if(!username || !message){
-        res.send({ status: "error", error: "Faltan datos" })
+    try {
+        const { username, message } = req.body;
+        if(!username || !message){
+            res.send({ status: "error", error: "Faltan datos" })
+        }
+        const savedMessage = await chatManager.saveMessage(username, message)
+        res.send({ status: "success", payload: savedMessage })
+    } catch (error) {
+        console.log("Error al guardar el mensaje", error)
     }
-    let result = await messageModel.create({ username, message })
-    res.send({ status: "success", payload: result })
 })
 
 module.exports = router;

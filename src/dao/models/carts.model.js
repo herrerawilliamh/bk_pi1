@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const cartCollection = "carts";
 const cartSchema = new mongoose.Schema({
-    id: {type: String, required: true},
     products: [{
         id: {type: String, required: true},
         //title: {type: String, required: true, max: 100},
