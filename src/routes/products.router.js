@@ -17,8 +17,7 @@ router.get("/products", async (req, res) => {
 router.get("/products/:pid", async (req, res) => {
     //const idProduct = parseInt(req.params.pid);
     const idProduct = req.params.pid;
-    const products = await productManager.getProducts();
-    const product = products.find(p => p.id === idProduct);
+    const product = await productManager.getProductsById(idProduct);
     if(!product) return res.send({error: "Producto no encontrado"});
     res.send({ product });
 })
@@ -39,9 +38,10 @@ router.post("/products", (req, res)=>{
     }
 })
 
-router.put("/products/:pid", (req, res) => {
-    const idProduct = parseInt(req.params.pid);
-    const product = productManager.getProductsById(idProduct);
+router.put("/products/:pid", async (req, res) => {
+    //const idProduct = parseInt(req.params.pid);
+    const idProduct = req.params.pid;
+    const product = await productManager.getProductsById(idProduct);
     if(!product) return res.send({error: "Producto no encontrado"});
     const {campo, dato} = req.body;
     const empty = Object.keys(req.body).length === 0;
@@ -54,7 +54,8 @@ router.put("/products/:pid", (req, res) => {
 })
 
 router.delete("/products/:pid", (req, res) => {
-    const idProduct = parseInt(req.params.pid);
+    //const idProduct = parseInt(req.params.pid);
+    const idProduct = req.params.pid;
     const product = productManager.getProductsById(idProduct);
     if(!product) return res.send({error: "Producto no encontrado"}); 
     const result = productManager.deleteProduct(idProduct);

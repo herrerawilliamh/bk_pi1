@@ -62,7 +62,7 @@ class ProductManager{
         /*const data_reading = this.getProducts()
         const product_found = data_reading.find((product)=>product.id===+id)*/
         try {
-            const product_found = await productModel.findOne({id: id})
+            const product_found = await productModel.findById(id)
             if(!product_found){
                 console.log("Product Not Found")
                 return
@@ -74,7 +74,7 @@ class ProductManager{
     }
     async updateProduct(id, campo, dato){
         //const data_reading = this.getProductsById(id);
-        const data_reading = await productModel.findOne({id: id});
+        const data_reading = await productModel.findById(id)
         if(!data_reading){
             console.log("Product Not Found. No se pudo actualizar el producto.")
             return
