@@ -66,7 +66,6 @@ io.on("connection", async (socket) =>{
         console.log("Usuario desconectado")
     })
     socket.emit('productsUpdated', productManager.getProducts());
-
     try {
         const messages = await chatManager.getMessages();
         socket.emit("load messages", messages);

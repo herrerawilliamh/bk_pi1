@@ -11,10 +11,10 @@ router.get('/realtimeproducts', async (req, res) => {
     res.render('realtimeproducts', {title: "WILLY Ecommerce - RealTime", products: products} )
 });
 
-router.post('/realtimeproducts', (req, res) => {
+router.post('/realtimeproducts', async (req, res) => {
    const {title, description, price, thumbnail, code, stock} = req.body; 
    try {
-    const newProduct = productManager.addProduct(title, description, price, thumbnail, code, stock);
+    const newProduct = await productManager.addProduct(title, description, price, thumbnail, code, stock);
     io.emit('product-created', newProduct);
     res.redirect('/realtimeproducts');
    } catch (error) {
