@@ -29,4 +29,31 @@ document.getElementById("username-form").addEventListener("submit", (e) => {
 
     document.getElementById("username-form").style.display = "none"
     document.getElementById("chat-form").style.display = "block"
+
+
+fetch("/api/chat")
+        .then(res => res.json())
+        .then(data => {
+            // Verificar si el estado es success
+            if (data.status === "success") {
+                // Obtener el arreglo de mensajes del payload
+                const messages = data.payload;
+                // Recorrer el arreglo de mensajes
+                for (let message of messages) {
+                    // Crear un elemento div para cada mensaje
+                    const messageElement = document.createElement("div")
+                    // Asignar el nombre de usuario y el contenido del mensaje al elemento div
+                    messageElement.innerHTML = `<strong>${message.username}: </strong> ${message.message}`
+                    // Agregar el elemento div al elemento chat-messages
+                    chatMessage.appendChild(messageElement)
+                }
+            } else {
+                // Mostrar un mensaje de error si el estado es error
+                console.log(data.error);
+            }
+        })
+        .catch(err => {
+            // Manejar posibles errores en la petición
+            console.log(err);
+        })
 })

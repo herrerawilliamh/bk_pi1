@@ -6,9 +6,9 @@ const ProductManager = require('../dao/ProductManager');
 const router = express.Router();
 const productManager = new ProductManager();
 
-router.get('/realtimeproducts', (req, res) => {
-    const products = productManager.getProducts();
-    res.render('realtimeproducts', {title: "WILLY Ecommerce", products: products} )
+router.get('/realtimeproducts', async (req, res) => {
+    const products = await productManager.getProducts();
+    res.render('realtimeproducts', {title: "WILLY Ecommerce - RealTime", products: products} )
 });
 
 router.post('/realtimeproducts', (req, res) => {

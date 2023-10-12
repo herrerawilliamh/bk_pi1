@@ -38,8 +38,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /*RENDER*/
-app.get('/', (req, res) => {
-    const products = productManager.getProducts();
+app.get('/', async (req, res) => {
+    const products = await productManager.getProducts();
     res.render('home', {title: "WILLY Ecommerce", products: products});
 });
 
@@ -64,6 +64,7 @@ io.on("connection", socket =>{
     socket.on("disconnect", () => {
         console.log("Usuario desconectado")
     })
+    socket.emit('productsUpdated', productManager.getProducts());
 })
 
 /*Middlewars*/
