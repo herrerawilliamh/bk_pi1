@@ -1,5 +1,7 @@
 const socket = io();
  
+document.getElementById("username-form").style.display = "block"
+    document.getElementById("chat-form").style.display = "none"
 document.getElementById("chat-form").addEventListener("submit", (e) => {
     e.preventDefault();
     const messageInput = document.getElementById("message")
