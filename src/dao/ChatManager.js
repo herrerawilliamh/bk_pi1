@@ -1,31 +1,33 @@
+const mongoose = require("mongoose");
 const { messageModel } = require("./models/message.model");
 
 class ChatManager{
-    constructor(messageModel){
+    constructor(){
         this.messages = [];
-        this.messageModel = messageModel;
     }
-    saveMessage(username, message){
-        const messageData = {
-            username,
-            message
-        };
-        this.messageModel.create(messageData, (error, result) => {
-            if (error) {
-                console.log("Error al crear el mensaje", error);
-                return;
-            }
-            console.log("Mensaje creado exitosamente", result);
-        });
+    async saveMessage(username, message){
+        try {
+            const messageData = {
+                username,
+                message
+            };
+            const savedMessage = await messageModel.create(messageData);
+            console.log("Mensaje creado exitosamente", savedMessage);
+            return savedMessage;
+        } catch (error) {
+            console.log("Error al crear el mensaje", error);
+            throw error;
+        }
     }
-    getMessages(){
-        this.messageModel.find({}, (error, result) => {
-            if (error) {
-                console.log("Error al obtener los mensajes", error);
-                return;
-            }
-            console.log("Mensajes obtenidos exitosamente", result);
-        });
+    async getMessages(){
+        try {
+            const messages = await messageModel.find({});
+            console.log("Mensajes obtenidos exitosamente", messages);
+            return messages;
+        } catch (error) {
+            console.log("Error al obtener los mensajes", error);
+            throw error;
+        }
     }
 }
 

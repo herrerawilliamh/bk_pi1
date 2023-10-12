@@ -5,7 +5,7 @@ const handlebars = require('express-handlebars');
 const http = require('http');
 const socketIO = require('socket.io');
 const { Server } = require('socket.io');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const Swal = require("sweetalert2");
 
 const app = express();
@@ -18,11 +18,15 @@ const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
 const usersRouter = require('./routes/users.router.js');
 const chatRouter = require('./routes/chat.router.js')
+
+/*DAO*/
 const ProductManager = require('./dao/ProductManager.js');
+const ChatManager = require('./dao/ChatManager.js');
 
 /*VARS*/
 const PORT = 8080;
 const productManager = new ProductManager();
+const chatManager = new ChatManager();
 
 /*HANDLEBARS START*/
 app.engine('handlebars', handlebars.engine());
@@ -39,6 +43,10 @@ app.get('/', (req, res) => {
     res.render('home', {title: "WILLY Ecommerce", products: products});
 });
 
+app.get('/api/chat', (req, res) => {
+    res.render('chat', {title: "WILLY Ecommerce - Contacto"})
+})
+
 /*USERS APLICATION*/
 const users = {};
 /*SOCKET*/
@@ -48,8 +56,9 @@ io.on("connection", socket =>{
         users[socket.id]=username
         io.emit("userConnected", username)
     })
-    socket.on("chatMessage", (message) => {
+    socket.on("chatMessage", async (message) => {
         const username = users[socket.id]
+        await chatManager.saveMessage(username, message)
         io.emit("message", {username: username, message: message})
     })
     socket.on("disconnect", () => {

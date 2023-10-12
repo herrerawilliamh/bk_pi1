@@ -5,7 +5,6 @@ document.getElementById("chat-form").addEventListener("submit", (e) => {
     const messageInput = document.getElementById("message")
     const message = messageInput.value
     messageInput.value = ""
-    
     socket.emit("chatMessage", message);
 })
 
