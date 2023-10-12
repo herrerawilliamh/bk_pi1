@@ -43,14 +43,15 @@ app.get('/', async (req, res) => {
     res.render('home', {title: "WILLY Ecommerce", products: products});
 });
 
-app.get('/api/chat', (req, res) => {
-    res.render('chat', {title: "WILLY Ecommerce - Contacto"})
+app.get('/api/chat', async (req, res) => {
+    const chats = await chatManager.getMessages();
+    res.render('chat', {title: "WILLY Ecommerce - Contacto", chats: chats})
 })
 
 /*USERS APLICATION*/
 const users = {};
 /*SOCKET*/
-io.on("connection", socket =>{
+io.on("connection", async (socket) =>{
     console.log("Usuario conectado");
     socket.on("newUser", (username) => {
         users[socket.id]=username
@@ -65,6 +66,13 @@ io.on("connection", socket =>{
         console.log("Usuario desconectado")
     })
     socket.emit('productsUpdated', productManager.getProducts());
+
+    try {
+        const messages = await chatManager.getMessages();
+        socket.emit("load messages", messages);
+    } catch (error) {
+        console.log("Error al emitir el evento load messages", error);
+    }
 })
 
 /*Middlewars*/

@@ -22,7 +22,8 @@ class ChatManager{
     async getMessages(){
         try {
             const messages = await messageModel.find({});
-            console.log("Mensajes obtenidos exitosamente", messages);
+            //console.log("Mensajes obtenidos exitosamente", messages);
+            console.log("Mensajes obtenidos exitosamente");
             return messages;
         } catch (error) {
             console.log("Error al obtener los mensajes", error);

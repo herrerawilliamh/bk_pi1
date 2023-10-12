@@ -1,4 +1,5 @@
 const socket = io();
+
 socket.on('product-created', (product) => {
     const li = document.createElement("li");
     li.id = product.id;
